@@ -13,6 +13,14 @@ Installs and configures **Bitcoin Knots** or **Bitcoin Core** on Debian-based se
 - Ansible 2.9+
 - Debian 13 or compatible OS (it can work on others but is untested).
 
+## Installation
+
+Install via Ansible Galaxy:
+
+```bash
+ansible-galaxy role install MaximeMRF.ansible-bitcoin-node
+```
+
 ## Role Variables
 
 See `defaults/main.yml` for full list. Key variables:
