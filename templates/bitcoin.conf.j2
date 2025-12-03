@@ -1,0 +1,42 @@
+testnet=0
+server=1
+listen=1
+bind=0.0.0.0
+
+server=1
+rpcbind=0.0.0.0
+rpcallowip=0.0.0.0/0
+rpcuser={{ bitcoin_rpc_user | default('bitcoinrpc') }}
+rpcpassword={{ bitcoin_rpc_password }}
+
+logips=1
+
+prune={{ bitcoin_prune_size | default('0') }}
+dbcache={{ bitcoin_dbcache | default('4096') }}
+maxmempool={{ bitcoin_maxmempool | default('300') }}
+
+zmqpubrawblock=tcp://0.0.0.0:28332
+zmqpubrawtx=tcp://0.0.0.0:28333
+
+{% if bitcoin_enable_indexes | default(false) %}
+txindex=1
+blockfilterindex=1
+coinstatsindex=1
+{% endif %}
+
+{% if bitcoin_variant == 'knots' %}
+spamtarp=1
+{% endif %}
+
+{% if bitcoin_config is defined %}
+{% for key, value in bitcoin_config.items() %}
+{% if value is string or value is number %}
+{{ key }}={{ value }}
+{% else %}
+{# Gestion des listes (pour les options multiples comme bind, whitelist, addnode) #}
+{% for item in value %}
+{{ key }}={{ item }}
+{% endfor %}
+{% endif %}
+{% endfor %}
+{% endif %}

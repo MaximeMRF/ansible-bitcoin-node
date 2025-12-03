@@ -1,0 +1,30 @@
+---
+- name: Install required packages
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+    name:
+      - python3-apt
+      - curl
+      - tar
+    state: present
+
+- name: Create Bitcoin user
+  user:
+    name: bitcoin
+    system: yes
+    shell: /bin/false
+    home: /var/lib/bitcoin
+    create_home: yes
+
+- name: Ensure Bitcoin data directory exists
+  file:
+    path: /var/lib/bitcoin
+    state: directory
+    owner: bitcoin
+    group: bitcoin
+    mode: '0750'
+
+- include_tasks: install.yml
+
+- include_tasks: configure.yml

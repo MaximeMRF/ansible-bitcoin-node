@@ -1,0 +1,79 @@
+---
+- name: Set Bitcoin archive variables
+  set_fact:
+    btc_archive_name: "bitcoin-{{ bitcoin_version }}-x86_64-linux-gnu.tar.gz"
+    btc_base_dir: >-
+      {%- if bitcoin_variant == 'knots' -%}
+      https://bitcoinknots.org/files/{{ bitcoin_version.split('.')[0] }}.x/{{ bitcoin_version }}
+      {%- else -%}
+      https://bitcoincore.org/bin/bitcoin-core-{{ bitcoin_version }}
+      {%- endif -%}
+
+- name: Clean URL variables (Safety check)
+  set_fact:
+    btc_base_dir: "{{ btc_base_dir | trim }}"
+
+- name: Download Bitcoin SHA256SUMS file
+  get_url:
+    url: "{{ btc_base_dir }}/SHA256SUMS"
+    dest: "/tmp/SHA256SUMS_{{ bitcoin_variant }}_{{ bitcoin_version }}"
+    mode: '0644'
+    timeout: 120
+  register: download_result
+  until: download_result is succeeded
+  retries: 5
+  delay: 10
+
+- name: Extract expected SHA256 hash
+  shell: >
+    grep "{{ btc_archive_name }}" /tmp/SHA256SUMS_{{ bitcoin_variant }}_{{ bitcoin_version }} | awk '{print $1}'
+  register: btc_sha256
+  changed_when: false
+
+- name: "Download Bitcoin {{ bitcoin_variant }} {{ bitcoin_version }}"
+  get_url:
+    url: "{{ btc_base_dir }}/{{ btc_archive_name }}"
+    dest: "/tmp/{{ btc_archive_name }}"
+    checksum: "sha256:{{ btc_sha256.stdout }}"
+    mode: '0644'
+    timeout: 120
+  register: download_result
+  until: download_result is succeeded
+  retries: 5
+  delay: 10
+
+- name: Create version-specific directory in /opt
+  file:
+    path: "/opt/bitcoin-{{ bitcoin_version }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Extract Bitcoin binaries to versioned directory
+  unarchive:
+    src: "/tmp/{{ btc_archive_name }}"
+    dest: "/opt/bitcoin-{{ bitcoin_version }}"
+    remote_src: yes
+    extra_opts:
+      - --strip-components=1
+    creates: "/opt/bitcoin-{{ bitcoin_version }}/bin/bitcoind"
+
+- name: Update symlinks to point to the new version
+  file:
+    src: "/opt/bitcoin-{{ bitcoin_version }}/bin/{{ item }}"
+    dest: "/usr/local/bin/{{ item }}"
+    state: link
+    force: yes
+  loop:
+    - bitcoind
+    - bitcoin-cli
+  notify: Restart bitcoind
+
+- name: Clean up installation files
+  file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - "/tmp/{{ btc_archive_name }}"
+    - "/tmp/SHA256SUMS_{{ bitcoin_variant }}_{{ bitcoin_version }}"

@@ -1,0 +1,21 @@
+# meta/main.yml
+galaxy_info:
+  author: MaximeMRF
+  description: Deploy Bitcoin Core or Bitcoin Knots nodes easily on Debian.
+  company: ""
+  license: MIT
+  min_ansible_version: 2.9
+  platforms:
+    - name: Debian
+      versions:
+        - bullseye
+        - bookworm
+        - trixie
+  galaxy_tags:
+    - bitcoin
+    - blockchain
+    - node
+    - knots
+    - crypto
+
+dependencies: []

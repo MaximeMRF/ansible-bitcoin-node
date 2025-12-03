@@ -1,0 +1,43 @@
+[Unit]
+Description=Bitcoin daemon
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=bitcoin
+Group=bitcoin
+
+Type=notify
+NotifyAccess=all
+
+RuntimeDirectory=bitcoin
+PIDFile=/run/bitcoin/bitcoind.pid
+
+ExecStart=/usr/local/bin/bitcoind \
+    -conf=/etc/bitcoin/bitcoin.conf \
+    -pid=/run/bitcoin/bitcoind.pid \
+    -datadir=/var/lib/bitcoin \
+    -daemon=0 \
+    -startupnotify='systemd-notify --ready' \
+    -shutdownnotify='systemd-notify --stopping'
+
+ExecStop=/usr/local/bin/bitcoin-cli \
+    -conf=/etc/bitcoin/bitcoin.conf \
+    stop
+
+TimeoutStartSec=infinity
+TimeoutStopSec=600
+
+Restart=on-failure
+RestartSec=30s
+
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=true
+NoNewPrivileges=true
+MemoryDenyWriteExecute=true
+ProtectProc=invisible
+ProtectKernelTunables=true
+
+[Install]
+WantedBy=multi-user.target
