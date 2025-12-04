@@ -3,6 +3,8 @@
 bitcoin_variant: "knots"
 bitcoin_version: "29.2.knots20251110"
 
+bitcoin_architecture: "x86_64"
+
 bitcoin_prune_size: 0
 bitcoin_enable_indexes: false
 

@@ -29,6 +29,7 @@ See `defaults/main.yml` for full list. Key variables:
 |----------|---------|-------------|
 | `bitcoin_variant` | `knots` | Choose between `core` or `knots` |
 | `bitcoin_version` | `29.2.knots20251110` | Version to install |
+| `bitcoin_architecture` | `x86_64` | Architecture to install (e.g. `x86_64`, `arm64`) |
 | `bitcoin_config` | `{}` | Dict for extra config (see example) |
 
 Variables may be changed in a new version of the role. I'm not sure which to put as defaults.

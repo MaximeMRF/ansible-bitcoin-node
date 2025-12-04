@@ -1,7 +1,7 @@
 ---
 - name: Set Bitcoin archive variables
   set_fact:
-    btc_archive_name: "bitcoin-{{ bitcoin_version }}-x86_64-linux-gnu.tar.gz"
+    btc_archive_name: "bitcoin-{{ bitcoin_version }}-{{ bitcoin_architecture }}-linux-gnu.tar.gz"
     btc_base_dir: >-
       {%- if bitcoin_variant == 'knots' -%}
       https://bitcoinknots.org/files/{{ bitcoin_version.split('.')[0] }}.x/{{ bitcoin_version }}
