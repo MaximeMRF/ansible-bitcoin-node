@@ -36,10 +36,14 @@ Variables may be changed in a new version of the role. I'm not sure which to put
 
 ## Example Playbook
 
+Create an inventory file `hosts.yaml`:
+
 ```yaml
 all:
   children:
     bitcoin_nodes:
+      vars:
+        ansible_user: "debian"
       hosts:
         node-btc-01:
           ansible_host: 192.168.0.10
@@ -62,3 +66,25 @@ all:
           bitcoin_config:
             uacomment: "MyCoreNode"
 ```
+
+Create a playbook file `playbook.yaml`:
+
+```yaml
+# playbook.yaml
+---
+- name: Deploy Bitcoin Node
+  hosts: bitcoin_nodes
+  become: yes
+
+  roles:
+    - role: MaximeMRF.ansible-bitcoin-node
+```
+
+Then run:
+
+```bash
+ansible-playbook -i hosts.yaml playbook.yaml
+```
+
+## License
+MIT
