@@ -30,6 +30,7 @@ See `defaults/main.yml` for full list. Key variables:
 | `bitcoin_variant` | `knots` | Choose between `core` or `knots` |
 | `bitcoin_version` | `29.2.knots20251110` | Version to install |
 | `bitcoin_architecture` | `x86_64` | Architecture to install (e.g. `x86_64`, `arm64`) |
+| `bitcoin_enable_indexes` | `true` | Enable or disable indexes |
 | `bitcoin_config` | `{}` | Dict for extra config (see example) |
 
 Variables may be changed in a new version of the role. I'm not sure which to put as defaults.
@@ -49,22 +50,44 @@ all:
           ansible_host: 192.168.0.10
           bitcoin_variant: "knots"
           bitcoin_version: "29.2.knots20251110"
-          bitcoin_rpc_password: "supersecurepassword"
+          # optional, default is "x86_64"
+          bitcoin_architecture: "x86_64"
           bitcoin_enable_indexes: false
-          bitcoin_prune_size: 4096
-          bitcoin_dbcache: 4096
           bitcoin_config:
             uacomment: "MyKnotsNode"
+            server: 1
+            listen: 1
+            logips: 1
+            bind: "0.0.0.0"
+            rpcbind: "0.0.0.0"
+            rpcallowip: "0.0.0.0/0"
+            rpcuser: "bitcoinrpc"
+            rpcpassword: "myverysecurepassword"
+            prune: 4096
+            dbcache: 4096
+            maxmempool: 300
+            zmqpubrawblock: "tcp://0.0.0.0:28332"
+            zmqpubrawtx: "tcp://0.0.0.0:28333"
         node-btc-02:
           ansible_host: 192.168.0.20
           bitcoin_variant: "core"
           bitcoin_version: "29.2"
-          bitcoin_rpc_password: "supersecurepassword"
           bitcoin_enable_indexes: false
-          bitcoin_prune_size: 4096
-          bitcoin_dbcache: 4096
           bitcoin_config:
             uacomment: "MyCoreNode"
+            server: 1
+            listen: 1
+            logips: 1
+            bind: "0.0.0.0"
+            rpcbind: "0.0.0.0"
+            rpcallowip: "0.0.0.0/0"
+            rpcuser: "bitcoinrpc"
+            rpcpassword: "myverysecurepassword"
+            prune: 4096
+            dbcache: 4096
+            maxmempool: 300
+            zmqpubrawblock: "tcp://0.0.0.0:28332"
+            zmqpubrawtx: "tcp://0.0.0.0:28333"
 ```
 
 Create a playbook file `playbook.yaml`:
