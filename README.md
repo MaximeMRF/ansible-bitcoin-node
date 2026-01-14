@@ -1,5 +1,9 @@
 # Ansible Role to deploy Bitcoin Knots / Core
 
+> 🚧 **Interested in a managed solution?**
+> This role serves as the foundational layer for my upcoming **Bitcoin Node as a Service** platform.
+> If you want the power of a sovereign node without managing the infrastructure yourself, **[check out the project & join the waitlist here](https://impedance.cloud/?utm_source=github&utm_medium=repo_readme&utm_campaign=ansible-bitcoin-node)**.
+
 Installs and configures **Bitcoin Knots** or **Bitcoin Core** on Debian-based servers.
 
 ## Features
